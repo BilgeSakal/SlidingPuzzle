@@ -17,7 +17,8 @@ public class SlidingPuzzle {
 
 	public static final int EMPTY_TILE_IDENTIFIER = 0;
 	public static final int SHUFFLE_COEFFCIENT = 1000;
-	public static final int BUTTON_PANEL_SIZE = 600;
+
+	public static final String VERSION = "v1.1.0";
 
 	private int row;
 	private int col;
@@ -51,7 +52,8 @@ public class SlidingPuzzle {
 	 */
 	private void initPuzzleTable() {
 		Tile[][] puzzleTable = new Tile[row][col];
-		BufferedImage[][] images = ImageManipulation.parcelImage(img, row, col, BUTTON_PANEL_SIZE, BUTTON_PANEL_SIZE);
+		BufferedImage[][] images = ImageManipulation.parcelImage(img, row, col, GameWindow.BUTTON_PANEL_SIZE,
+				GameWindow.BUTTON_PANEL_SIZE);
 
 		for (int i = 0; i < getRow(); i++) {
 			for (int j = 0; j < getCol(); j++) {
@@ -63,8 +65,8 @@ public class SlidingPuzzle {
 
 			}
 		}
-		setCurrMove(new Move(puzzleTable, new Point(0, 0)));
-		setGoal(new Move(puzzleTable, new Point(0, 0)));
+		setCurrMove(new Move(MatrixManipulation.copyMatrix(puzzleTable), new Point(0, 0)));
+		setGoal(new Move(MatrixManipulation.copyMatrix(puzzleTable), new Point(0, 0)));
 	}
 
 	/**

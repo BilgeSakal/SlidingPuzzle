@@ -30,17 +30,23 @@ public class MatrixManipulation {
 
 		for (int i = 0; i < a.length; ++i) {
 			for (int j = 0; j < a[i].length; ++j) {
-				result[i][j] = a[i][j];
+				result[i][j] = copyTile(a[i][j]);
 			}
 		}
 
 		return result;
 	}
-	
+
+	private static Tile copyTile(Tile t) {
+		Tile ret = new Tile(t.getIdentifier(), t.getLocation(), t.getImg());
+		return ret;
+	}
+
 	public static Tile findTileFromPoint(Tile[][] tile, Point point) {
 		for (int i = 0; i < tile.length; ++i) {
 			for (int j = 0; j < tile[i].length; ++j) {
-				if (tile[i][j].getLocation().getX() == point.getY() && tile[i][j].getLocation().getY() == point.getY()) {
+				if (tile[i][j].getLocation().getX() == point.getY()
+						&& tile[i][j].getLocation().getY() == point.getY()) {
 					return tile[i][j];
 				}
 			}

@@ -19,6 +19,9 @@ public class TileButtonActionListener implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		SlidingPuzzle game = gameWindow.getGame();
 		game.moveTile(tileButton.getTile());
+		if (gameWindow.getGame().isFinished()) {
+			gameWindow.finishGame();
+		}
 	}
 
 }

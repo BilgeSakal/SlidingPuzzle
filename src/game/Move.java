@@ -10,7 +10,7 @@ public class Move {
 	public Point emptyTileLocation;
 
 	public Move(Tile[][] puzzleTable, Point emptyTileLocation) {
-		this.puzzleTable = MatrixManipulation.copyMatrix(puzzleTable);
+		this.puzzleTable = puzzleTable;
 		this.emptyTileLocation = emptyTileLocation;
 	}
 
