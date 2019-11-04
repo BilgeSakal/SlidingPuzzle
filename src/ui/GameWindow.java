@@ -246,7 +246,9 @@ public class GameWindow {
 	private void disableButtons() {
 		for (int i = 0; i < tileButtons.length; ++i) {
 			for (int j = 0; j < tileButtons[i].length; ++j) {
-				tileButtons[i][j].setEnabled(false);
+				TileButton btn = tileButtons[i][j];
+				// remove the action listener so the button does not do anything on click
+				btn.removeActionListener(btn.getActionListeners()[0]);
 			}
 		}
 	}
