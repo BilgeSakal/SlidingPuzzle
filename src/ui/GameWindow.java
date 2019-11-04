@@ -2,6 +2,7 @@ package ui;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -27,6 +29,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import game.Point;
 import game.SlidingPuzzle;
 import ui.input.RowColReader;
+import ui.output.MoveCountPanel;
+import ui.output.TimePanel;
 
 public class GameWindow {
 
@@ -39,10 +43,16 @@ public class GameWindow {
 	private JFrame gameFrame;
 	private SlidingPuzzle game;
 	private TileButton[][] tileButtons;
-	private JPanel tilePanel;
+
 	private ArrayList<BufferedImage> images;
 	private ArrayList<String> imageNames = new ArrayList<String>(Arrays.asList("farm.jpg", "cn.jpeg", "marvel.jpeg"));
 	private BufferedImage currImage;
+
+	private JPanel tilePanel;
+	private JPanel upperPanel;
+
+	private TimePanel timePanel;
+	private MoveCountPanel moveCountPanel;
 
 	private int row;
 	private int col;
@@ -91,9 +101,17 @@ public class GameWindow {
 				imgSelect.createAndShowUI();
 			}
 		});
+		JMenuItem resetItem = new JMenuItem("Reset");
+		resetItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				resetGame();
+			}
+		});
 
 		initDefaultImages(newGameMenu);
 		newGameMenu.add(customImageItem);
+		newGameMenu.add(resetItem);
 		menuBar.add(newGameMenu);
 	}
 
@@ -175,13 +193,19 @@ public class GameWindow {
 	private void newGame(int row, int col, BufferedImage img) {
 		if (gameFrame != null) {
 			gameFrame.dispose();
+			game.getTimer().terminate();
 		}
 		this.row = row;
 		this.col = col;
 		currImage = img;
 		game = new SlidingPuzzle(row, col, img, this);
+		timePanel = new TimePanel();
+		moveCountPanel = new MoveCountPanel();
+		game.getTimer().setTimePanel(timePanel);
+		game.setMoveCountPanel(moveCountPanel);
 		game.startGame();
 		createAndShowUI();
+		game.getTimer().start();
 	}
 
 	/**
@@ -190,6 +214,7 @@ public class GameWindow {
 	public void initFrame() {
 		initGameWindow();
 		initMenuBar();
+		initUpperPanel();
 		initTilePanel();
 		gameFrame.pack();
 		setGameWindowLocation();
@@ -208,6 +233,17 @@ public class GameWindow {
 		tilePanel.setLayout(new GridLayout(row, col));
 		initTileButtons();
 		gameFrame.add(tilePanel);
+	}
+
+	private void initUpperPanel() {
+		upperPanel = new JPanel();
+		upperPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+		upperPanel.add(timePanel);
+		upperPanel.add(Box.createRigidArea(new Dimension(50, 0)));
+		upperPanel.add(moveCountPanel);
+
+		gameFrame.add(upperPanel);
 	}
 
 	private void initTileButtons() {
@@ -229,6 +265,7 @@ public class GameWindow {
 	 * Called when the game is finished.
 	 */
 	public void finishGame() {
+		game.getTimer().terminate();
 		disableButtons();
 		showFinishedInfo();
 	}
@@ -237,7 +274,8 @@ public class GameWindow {
 	 * Shows game finished info.
 	 */
 	private void showFinishedInfo() {
-		JOptionPane.showMessageDialog(gameFrame, "Congratulations! You finished in " + game.getMoveCount() + " moves.");
+		JOptionPane.showMessageDialog(gameFrame, "Congratulations! You finished in " + game.getMoveCount()
+				+ " moves and " + game.getTimer().getTime() + " seconds.");
 	}
 
 	/**
@@ -251,6 +289,10 @@ public class GameWindow {
 				btn.removeActionListener(btn.getActionListeners()[0]);
 			}
 		}
+	}
+
+	private void resetGame() {
+		newGame(row, col);
 	}
 
 	/**

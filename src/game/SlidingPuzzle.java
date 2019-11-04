@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 
 import ui.GameWindow;
 import ui.ImageManipulation;
+import ui.output.MoveCountPanel;
 
 public class SlidingPuzzle {
 
@@ -18,7 +19,7 @@ public class SlidingPuzzle {
 	public static final int EMPTY_TILE_IDENTIFIER = 0;
 	public static final int SHUFFLE_COEFFCIENT = 1000;
 
-	public static final String VERSION = "v1.2.1";
+	public static final String VERSION = "v1.3.0";
 
 	private int row;
 	private int col;
@@ -31,6 +32,8 @@ public class SlidingPuzzle {
 	private BufferedImage img;
 
 	private GameWindow gameFrame;
+	private Timer timer = new Timer();
+	private MoveCountPanel moveCountPanel;
 
 	public SlidingPuzzle(int row, int col, BufferedImage img, GameWindow gameFrame) {
 		setRow(row);
@@ -96,6 +99,7 @@ public class SlidingPuzzle {
 	 */
 	private void incMoveCount() {
 		++moveCount;
+		moveCountPanel.updateMoveCount(moveCount);
 	}
 
 	/**
@@ -176,6 +180,14 @@ public class SlidingPuzzle {
 
 	public Move getCurrMove() {
 		return currMove;
+	}
+	
+	public Timer getTimer() {
+		return timer;
+	}
+
+	public void setMoveCountPanel(MoveCountPanel moveCountPanel) {
+		this.moveCountPanel = moveCountPanel;
 	}
 
 }
