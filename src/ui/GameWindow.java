@@ -26,21 +26,26 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import game.Point;
 import game.SlidingPuzzle;
+import ui.input.RowColReader;
 
 public class GameWindow {
 
 	public static final int BUTTON_PANEL_SIZE = 600;
 	private static final int MENU_ITEM_SIZE = 30;
 
-	private static final int ROW = 3;
-	private static final int COL = 3;
+	private static final int DEFAULT_ROW = 3;
+	private static final int DEFAULT_COL = 3;
 
-	private JFrame gameWindow;
+	private JFrame gameFrame;
 	private SlidingPuzzle game;
 	private TileButton[][] tileButtons;
 	private JPanel tilePanel;
 	private ArrayList<BufferedImage> images;
 	private ArrayList<String> imageNames = new ArrayList<String>(Arrays.asList("farm.jpg", "cn.jpeg", "marvel.jpeg"));
+	private BufferedImage currImage;
+
+	private int row;
+	private int col;
 
 	private JMenuBar menuBar;
 
@@ -48,13 +53,13 @@ public class GameWindow {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				GameWindow gameWindow = new GameWindow(ROW, COL);
+				GameWindow gameWindow = new GameWindow();
 				gameWindow.newGame();
 			}
 		});
 	}
 
-	public GameWindow(int row, int col) {
+	public GameWindow() {
 		readImages();
 	}
 
@@ -68,6 +73,13 @@ public class GameWindow {
 	private void initMenuBar() {
 		menuBar = new JMenuBar();
 
+		initNewGameMenu(menuBar);
+		initSizeMenu(menuBar);
+
+		gameFrame.setJMenuBar(menuBar);
+	}
+
+	private void initNewGameMenu(JMenuBar menuBar) {
 		JMenu newGameMenu = new JMenu("New Game");
 
 		JMenuItem customImageItem = new JMenuItem("Custom Image");
@@ -82,10 +94,37 @@ public class GameWindow {
 
 		initDefaultImages(newGameMenu);
 		newGameMenu.add(customImageItem);
-
 		menuBar.add(newGameMenu);
+	}
 
-		gameWindow.setJMenuBar(menuBar);
+	private void initSizeMenu(JMenuBar menuBar) {
+		JMenu sizeMenu = new JMenu("Size");
+
+		for (int i = 3; i <= 5; ++i) {
+			JMenuItem item = new JMenuItem(i + "x" + i);
+			GameWindow gw = this;
+			int size = i;
+			item.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					newGame(size, size, gw.currImage);
+				}
+			});
+			sizeMenu.add(item);
+		}
+		JMenuItem customSize = new JMenuItem("Custom Size");
+		GameWindow gw = this;
+		customSize.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RowColReader rowColReader = new RowColReader(gw);
+				rowColReader.createAndShowUI();
+			}
+		});
+		sizeMenu.add(customSize);
+
+		menuBar.add(sizeMenu);
+
 	}
 
 	/**
@@ -118,20 +157,31 @@ public class GameWindow {
 		}
 	}
 
-	public void newGame(BufferedImage img) {
-		if (gameWindow != null) {
-			gameWindow.dispose();
-		}
-		game = new SlidingPuzzle(ROW, COL, img, this);
-		game.startGame();
-		createAndShowUI();
+	private void newGame(BufferedImage img) {
+		newGame(DEFAULT_ROW, DEFAULT_COL, img);
 	}
 
 	/**
 	 * Starts a new game.
 	 */
-	public void newGame() {
-		newGame(images.get(0));
+	private void newGame() {
+		newGame(DEFAULT_ROW, DEFAULT_COL, images.get(0));
+	}
+
+	public void newGame(int row, int col) {
+		newGame(row, col, currImage);
+	}
+
+	private void newGame(int row, int col, BufferedImage img) {
+		if (gameFrame != null) {
+			gameFrame.dispose();
+		}
+		this.row = row;
+		this.col = col;
+		currImage = img;
+		game = new SlidingPuzzle(row, col, img, this);
+		game.startGame();
+		createAndShowUI();
 	}
 
 	/**
@@ -141,32 +191,32 @@ public class GameWindow {
 		initGameWindow();
 		initMenuBar();
 		initTilePanel();
-		gameWindow.pack();
+		gameFrame.pack();
 		setGameWindowLocation();
-		gameWindow.setVisible(true);
+		gameFrame.setVisible(true);
 	}
 
 	private void initGameWindow() {
-		gameWindow = new JFrame("Sliding Puzzle " + SlidingPuzzle.VERSION);
-		gameWindow.setResizable(false);
-		gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		gameWindow.setLayout(new BoxLayout(gameWindow.getContentPane(), BoxLayout.PAGE_AXIS));
+		gameFrame = new JFrame("Sliding Puzzle " + SlidingPuzzle.VERSION);
+		gameFrame.setResizable(false);
+		gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		gameFrame.setLayout(new BoxLayout(gameFrame.getContentPane(), BoxLayout.PAGE_AXIS));
 	}
 
 	private void initTilePanel() {
 		tilePanel = new JPanel();
-		tilePanel.setLayout(new GridLayout(ROW, COL));
+		tilePanel.setLayout(new GridLayout(row, col));
 		initTileButtons();
-		gameWindow.add(tilePanel);
+		gameFrame.add(tilePanel);
 	}
 
 	private void initTileButtons() {
-		tileButtons = new TileButton[ROW][COL];
-		for (int i = 0; i < ROW; ++i) {
-			for (int j = 0; j < COL; ++j) {
+		tileButtons = new TileButton[row][col];
+		for (int i = 0; i < row; ++i) {
+			for (int j = 0; j < col; ++j) {
 				Point p = new Point(i, j);
-				TileButton tileButton = new TileButton(game.getCurrMove().getTile(p), BUTTON_PANEL_SIZE / COL,
-						BUTTON_PANEL_SIZE / ROW);
+				TileButton tileButton = new TileButton(game.getCurrMove().getTile(p), BUTTON_PANEL_SIZE / col,
+						BUTTON_PANEL_SIZE / row);
 				tileButton.addActionListener(new TileButtonActionListener(this, tileButton));
 				game.getCurrMove().getTile(p).setTileButton(tileButton);
 				tileButtons[i][j] = tileButton;
@@ -187,8 +237,7 @@ public class GameWindow {
 	 * Shows game finished info.
 	 */
 	private void showFinishedInfo() {
-		JOptionPane.showMessageDialog(gameWindow,
-				"Congratulations! You finished in " + game.getMoveCount() + " moves.");
+		JOptionPane.showMessageDialog(gameFrame, "Congratulations! You finished in " + game.getMoveCount() + " moves.");
 	}
 
 	/**
@@ -207,12 +256,16 @@ public class GameWindow {
 	 */
 	private void setGameWindowLocation() {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		gameWindow.setLocation((int) ((dim.width >> 1) - ((int) gameWindow.getSize().getWidth() >> 1)),
-				(int) ((dim.height >> 1) - ((int) gameWindow.getSize().getHeight() >> 1)));
+		gameFrame.setLocation((int) ((dim.width >> 1) - ((int) gameFrame.getSize().getWidth() >> 1)),
+				(int) ((dim.height >> 1) - ((int) gameFrame.getSize().getHeight() >> 1)));
 	}
 
 	public SlidingPuzzle getGame() {
 		return game;
+	}
+
+	public JFrame getGameFrame() {
+		return gameFrame;
 	}
 
 	private class ImageSelectFrame {
