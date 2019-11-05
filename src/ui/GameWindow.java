@@ -54,6 +54,9 @@ public class GameWindow {
 	private TimePanel timePanel;
 	private MoveCountPanel moveCountPanel;
 
+	private BufferedImage questionMarkImage;
+	private BufferedImage resetImage;
+
 	private int row;
 	private int col;
 
@@ -93,6 +96,9 @@ public class GameWindow {
 		JMenu newGameMenu = new JMenu("New Game");
 
 		JMenuItem customImageItem = new JMenuItem("Custom Image");
+		customImageItem
+				.setIcon(new ImageIcon(ImageManipulation.resize(questionMarkImage, MENU_ITEM_SIZE, MENU_ITEM_SIZE)));
+
 		GameWindow gw = this;
 		customImageItem.addActionListener(new ActionListener() {
 			@Override
@@ -102,6 +108,7 @@ public class GameWindow {
 			}
 		});
 		JMenuItem resetItem = new JMenuItem("Reset");
+		resetItem.setIcon(new ImageIcon(ImageManipulation.resize(resetImage, MENU_ITEM_SIZE, MENU_ITEM_SIZE)));
 		resetItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -154,6 +161,8 @@ public class GameWindow {
 			for (String fileName : imageNames) {
 				images.add(ImageIO.read(GameWindow.class.getResource("/" + fileName)));
 			}
+			resetImage = ImageIO.read(GameWindow.class.getResource("/reset.png"));
+			questionMarkImage = ImageIO.read(GameWindow.class.getResource("/questionmark.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
