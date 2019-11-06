@@ -2,6 +2,7 @@ package ui.input;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -57,6 +58,10 @@ public class LabeledDigitTextPanel extends JPanel {
 			return Integer.parseInt(text);
 		}
 		return -1;
+	}
+
+	public void addAction(ActionListener al) {
+		textField.addActionListener(al);
 	}
 
 }

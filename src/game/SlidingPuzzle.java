@@ -19,7 +19,7 @@ public class SlidingPuzzle {
 	public static final int EMPTY_TILE_IDENTIFIER = 0;
 	public static final int SHUFFLE_COEFFCIENT = 1000;
 
-	public static final String VERSION = "v1.3.1";
+	public static final String VERSION = "v1.3.2";
 
 	private int row;
 	private int col;

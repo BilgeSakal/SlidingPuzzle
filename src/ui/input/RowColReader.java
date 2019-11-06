@@ -39,6 +39,18 @@ public class RowColReader {
 
 	public RowColReader(GameWindow gameWindow) {
 		this.gameWindow = gameWindow;
+		rowReader.addAction(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				okButtonAction();
+			}
+		});
+		colReader.addAction(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				okButtonAction();
+			}
+		});
 		initFrame();
 	}
 
