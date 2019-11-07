@@ -7,20 +7,19 @@ import game.SlidingPuzzle;
 
 public class TileButtonActionListener implements ActionListener {
 
-	private GameWindow gameWindow;
+	private SlidingPuzzle game;
 	private TileButton tileButton;
 
-	public TileButtonActionListener(GameWindow gameFrame, TileButton tileButton) {
-		this.gameWindow = gameFrame;
+	public TileButtonActionListener(SlidingPuzzle game, TileButton tileButton) {
+		this.game = game;
 		this.tileButton = tileButton;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		SlidingPuzzle game = gameWindow.getGame();
 		game.moveTile(tileButton.getTile());
-		if (gameWindow.getGame().isFinished()) {
-			gameWindow.finishGame();
+		if (game.isFinished()) {
+			game.finishGame();
 		}
 	}
 

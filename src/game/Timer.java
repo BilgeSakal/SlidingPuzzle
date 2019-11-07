@@ -1,6 +1,6 @@
 package game;
 
-import ui.output.TimePanel;
+import ui.panel.TimePanel;
 
 public class Timer extends Thread {
 
@@ -8,9 +8,14 @@ public class Timer extends Thread {
 	private TimePanel timePanel;
 	private boolean running = true;
 
+	public Timer() {
+		setTimePanel(new TimePanel());
+	}
+
 	private void incTime() {
 		++time;
-		timePanel.updateTime(time);
+		if (timePanel != null)
+			timePanel.updateTime(time);
 	}
 
 	@Override
@@ -27,13 +32,19 @@ public class Timer extends Thread {
 			}
 		}
 	}
-	
+
 	public int getTime() {
 		return time;
 	}
-	
+
 	public void terminate() {
 		running = false;
+	}
+
+	// Getters and Setters
+
+	public TimePanel getTimePanel() {
+		return timePanel;
 	}
 
 	public void setTimePanel(TimePanel timePanel) {

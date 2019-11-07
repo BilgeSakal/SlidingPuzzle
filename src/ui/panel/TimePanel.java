@@ -1,10 +1,13 @@
-package ui.output;
+package ui.panel;
 
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import ui.GameWindow;
 
 public class TimePanel extends JPanel {
 
@@ -19,6 +22,7 @@ public class TimePanel extends JPanel {
 
 	private void initPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+		setBorder(BorderFactory.createEmptyBorder(0, GameWindow.MARGIN, 0, GameWindow.MARGIN));
 		initLabel();
 		initTime();
 	}
