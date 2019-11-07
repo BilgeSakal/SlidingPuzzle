@@ -24,6 +24,10 @@ public class Point {
 		return this.x == p.x && this.y == p.y;
 	}
 
+	public int dist(Point p) {
+		return Math.abs(this.x - p.x) + Math.abs(this.y - y);
+	}
+
 	// getters and setters
 
 	public int getX() {

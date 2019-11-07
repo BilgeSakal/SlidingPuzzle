@@ -19,7 +19,7 @@ public class SlidingPuzzle {
 	public static final int EMPTY_TILE_IDENTIFIER = 0;
 	public static final int SHUFFLE_COEFFCIENT = 1000;
 
-	public static final String VERSION = "v2.0.0";
+	public static final String VERSION = "v2.1.0";
 
 	private int row;
 	private int col;
@@ -119,6 +119,9 @@ public class SlidingPuzzle {
 	public boolean moveTile(Tile tile) {
 		if (currMove.swapEmptyTile(tile)) {
 			incMoveCount();
+			if (isFinished()) {
+				finishGame();
+			}
 			return true;
 		}
 		return false;

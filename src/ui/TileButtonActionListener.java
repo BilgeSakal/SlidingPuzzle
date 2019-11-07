@@ -17,10 +17,8 @@ public class TileButtonActionListener implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		game.getGameFrame().getGamePanel().getUtilPanel().getSearchPanel().getSimulateButton().setEnabled(false);
 		game.moveTile(tileButton.getTile());
-		if (game.isFinished()) {
-			game.finishGame();
-		}
 	}
 
 }

@@ -25,8 +25,6 @@ public class GamePanel extends JPanel {
 
 	private void initPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-//		int margin = GameWindow.MARGIN;
-//		setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
 		setBackground(new Color(178, 235, 242));
 
 		tilePanel = new TilePanel(game);
@@ -39,6 +37,10 @@ public class GamePanel extends JPanel {
 
 	public TilePanel getTilePanel() {
 		return tilePanel;
+	}
+	
+	public UtilPanel getUtilPanel() {
+		return utilPanel;
 	}
 
 }

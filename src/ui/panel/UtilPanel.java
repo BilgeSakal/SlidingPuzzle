@@ -1,7 +1,6 @@
 package ui.panel;
 
-import java.awt.GridLayout;
-
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import game.SlidingPuzzle;
@@ -13,8 +12,9 @@ public class UtilPanel extends JPanel {
 	private SlidingPuzzle game;
 
 	private ImagePanel imgPanel;
-	private TimePanel timePanel;
-	private MoveCountPanel moveCountPanel;
+	private GameInfoPanel gameInfoPanel;
+	private SearchPanel searchPanel;
+	private SearchInfoPanel searchInfoPanel;
 
 	public UtilPanel(SlidingPuzzle game) {
 		this.game = game;
@@ -22,17 +22,21 @@ public class UtilPanel extends JPanel {
 	}
 
 	private void initPanel() {
-		setLayout(new GridLayout(3, 1));
-//		int margin = GameWindow.MARGIN;
-//		setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
+		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
 		imgPanel = new ImagePanel(game.getImg());
-		timePanel = game.getTimer().getTimePanel();
-		moveCountPanel = game.getMoveCountPanel();
+		gameInfoPanel = new GameInfoPanel(game);
+		searchInfoPanel = new SearchInfoPanel();
+		searchPanel = new SearchPanel(game, searchInfoPanel);
 
 		add(imgPanel);
-		add(timePanel);
-		add(moveCountPanel);
+		add(gameInfoPanel);
+		add(searchPanel);
+		add(searchInfoPanel);
+	}
+	
+	public SearchPanel getSearchPanel() {
+		return searchPanel;
 	}
 
 }

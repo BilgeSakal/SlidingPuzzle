@@ -198,5 +198,9 @@ public class GameWindow {
 	public BufferedImage getCurrImage() {
 		return currImage;
 	}
+	
+	public GamePanel getGamePanel() {
+		return gamePanel;
+	}
 
 }

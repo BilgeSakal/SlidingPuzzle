@@ -1,13 +1,17 @@
 package game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Move {
 
-	public Tile[][] puzzleTable;
+	private Tile[][] puzzleTable;
 
 	/**
 	 * Location of the empty tile
 	 */
-	public Point emptyTileLocation;
+	private Point emptyTileLocation;
 
 	public Move(Tile[][] puzzleTable, Point emptyTileLocation) {
 		this.puzzleTable = puzzleTable;
@@ -113,6 +117,43 @@ public class Move {
 		return false;
 	}
 
+	public List<Integer> possibleDirections() {
+		List<Integer> possDirs = new ArrayList<Integer>(2);
+
+		int emptyX = emptyTileLocation.getX();
+		int emptyY = emptyTileLocation.getY();
+
+		if (emptyX > 0)
+			possDirs.add(SlidingPuzzle.UP);
+		if (emptyX < puzzleTable.length - 1)
+			possDirs.add(SlidingPuzzle.DOWN);
+		if (emptyY > 0)
+			possDirs.add(SlidingPuzzle.LEFT);
+		if (emptyY < puzzleTable[0].length)
+			possDirs.add(SlidingPuzzle.RIGHT);
+
+		return possDirs;
+	}
+	
+	public static int findMovedDirection(Move m1, Move m2) {
+		int m1x = m1.getEmptyTileLocation().getX();
+		int m1y = m1.getEmptyTileLocation().getY();
+
+		int m2x = m2.getEmptyTileLocation().getX();
+		int m2y = m2.getEmptyTileLocation().getY();
+
+		if (m1x > m2x) {
+			return SlidingPuzzle.UP;
+		} else if (m2x > m1x) {
+			return SlidingPuzzle.DOWN;
+		} else if (m1y > m2y) {
+			return SlidingPuzzle.LEFT;
+		} else {
+			return SlidingPuzzle.RIGHT;
+		}
+
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof Move) {
@@ -122,6 +163,25 @@ public class Move {
 			return false;
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		int[] hash = new int[puzzleTable.length * puzzleTable[0].length];
+		for (int i = 0; i < puzzleTable.length; ++i) {
+			for (int j = 0; j < puzzleTable[i].length; ++j) {
+				hash[i * puzzleTable[i].length + j] = puzzleTable[i][j].getIdentifier();
+			}
+		}
+		return Arrays.hashCode(hash);
+	}
+
+	public Point getEmptyTileLocation() {
+		return emptyTileLocation;
+	}
+	
+	public Tile[][] getPuzzleTable() {
+		return puzzleTable;
 	}
 
 }
